@@ -126,7 +126,6 @@ const StyledHeading = styled.h4`
 	text-transform: capitalize;
 	letter-spacing: var(--spacing);
 `;
-const StyledParagraph = styled.p``;
 const StyledSubmitButton = styled.button`
 	cursor: pointer;
 	appearance: none;
@@ -153,7 +152,5 @@ const StyledSubmitButton = styled.button`
 		box-shadow: var(--shadow-2);
 	}
 `;
-const StyledEditButton = styled.button``;
-const StyledDeleteButton = styled.button``;
 
 export default App;
