@@ -4,6 +4,12 @@ import colors from 'colors';
 import morgan from 'morgan';
 import 'express-async-errors';
 
+// Connect to database
+import { connectDB } from './db/connect';
+
+// Router
+import TaskRouters from './routers/taskRoutes';
+
 dotenv.config();
 
 const app: Express = express();
@@ -23,7 +29,11 @@ app.get('/', (req: Request, res: Response) => {
 	res.send('Express + TypeScript Server');
 });
 
-app.listen(PORT, () => {
+// Routers
+app.use('/api/v1/tasks', TaskRouters);
+
+app.listen(PORT, async () => {
+	connectDB(process.env.MONGO_URI as string);
 	console.log(
 		colors.bgYellow.blue.bold(
 			`⚡️[server]: Server is running at https://localhost:${PORT}`
