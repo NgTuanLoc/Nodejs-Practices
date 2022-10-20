@@ -25,6 +25,7 @@ const initialState: IState = {
 	msg: '',
 	isModalOpen: false,
 	selectedTask: {
+		_id: '',
 		name: '',
 		completed: false,
 	},
@@ -39,6 +40,9 @@ const taskSlice = createSlice({
 		},
 		closeModal: (state) => {
 			state.isModalOpen = false;
+		},
+		clearError: (state) => {
+			state.error = '';
 		},
 	},
 	extraReducers(builder) {
@@ -125,6 +129,6 @@ const taskSlice = createSlice({
 	},
 });
 
-export const { openModal, closeModal } = taskSlice.actions;
+export const { openModal, closeModal, clearError } = taskSlice.actions;
 
 export default taskSlice.reducer;

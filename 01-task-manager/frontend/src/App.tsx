@@ -1,13 +1,24 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import styled from 'styled-components';
 
-import { getAllTasksThunk } from './features/taskThunk';
+import { getAllTasksThunk, createTaskThunk } from './features/taskThunk';
 import { useAppDispatch, useAppSelector } from './app/hooks';
-import { Loading } from './components';
+import { Loading, Task, Modal } from './components';
 
 function App() {
 	const dispatch = useAppDispatch();
-	const { isLoading } = useAppSelector((store) => store.task);
+	const inputRef = useRef<HTMLInputElement>(null);
+	const { isLoading, tasks, isModalOpen } = useAppSelector(
+		(store) => store.task
+	);
+
+	const onClickHandler = () => {
+		let value: string = '';
+		if (inputRef.current) {
+			value = inputRef.current.value;
+		}
+		dispatch(createTaskThunk({ name: value, completed: false }));
+	};
 
 	useEffect(() => {
 		dispatch(getAllTasksThunk());
@@ -27,27 +38,35 @@ function App() {
 				<StyledForm>
 					<StyledHeading>Task Manager</StyledHeading>
 					<StyledSearchContainer>
-						<StyledInput placeholder='e.g: Washing dishes' />
-						<StyledSubmitButton type='submit'>Submit</StyledSubmitButton>
+						<StyledInput ref={inputRef} placeholder='e.g: Washing dishes' />
+						<StyledSubmitButton type='button' onClick={onClickHandler}>
+							Submit
+						</StyledSubmitButton>
 					</StyledSearchContainer>
 				</StyledForm>
-				<StyledTaskContainer></StyledTaskContainer>
+				<StyledTaskContainer>
+					{tasks.map((task) => (
+						<Task key={task._id} {...task} />
+					))}
+				</StyledTaskContainer>
 			</StyledContent>
+			{isModalOpen && <Modal />}
 		</StyledContainer>
 	);
 }
 
 const StyledContainer = styled.main`
+	position: relative;
 	width: 100vw;
 	min-height: 100vh;
 	background-color: #f2f4f8;
 	display: flex;
 	flex-direction: column;
 	align-items: center;
+	padding: 5rem;
 `;
 
 const StyledContent = styled.section`
-	margin-top: 8rem;
 	width: 90vw;
 	max-width: var(--fixed-width);
 	display: flex;
@@ -92,11 +111,12 @@ const StyledInput = styled.input`
 	}
 `;
 
-const StyledTaskContainer = styled.div``;
-
-const StyledTask = styled.button`
-	background-color: white;
-	border-radius: var(--radius);
+const StyledTaskContainer = styled.div`
+	margin-top: 5rem;
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	gap: 1rem;
 `;
 
 // Typography
