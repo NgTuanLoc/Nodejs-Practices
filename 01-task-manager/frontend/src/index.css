@@ -1,13 +1,242 @@
 body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+	margin: 0;
+	font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+		'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+		sans-serif;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+	font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+		monospace;
+}
+
+:root {
+	--primary-0: #f0efff;
+	--primary-50: #d8d6ff;
+	--primary-100: #c1beff;
+	--primary-200: #aaa5ff;
+	--primary-300: #938dff;
+	--primary-400: #7b74ff;
+	--primary-500: #645cff;
+	--primary-600: #554ed9;
+	--primary-700: #4640b3;
+	--primary-800: #37338c;
+	--primary-900: #282566;
+	--primary-1000: #191740;
+	--primary-1100: #0a0919;
+	--grey-0: #fafbfc;
+	--grey-50: #f2f4f8;
+	--grey-100: #eaedf3;
+	--grey-200: #e2e7ef;
+	--grey-300: #dbe0ea;
+	--grey-400: #d3dae6;
+	--grey-500: #cbd3e1;
+	--grey-600: #adb3bf;
+	--grey-700: #8e949e;
+	--grey-800: #70747c;
+	--grey-900: #51545a;
+	--grey-1000: #333538;
+	--grey-1100: #141516;
+	--black: #222;
+	--white: #fff;
+	--red-light: #f8d7da;
+	--red-dark: #842029;
+	--green-light: #d1e7dd;
+	--green-dark: #0f5132;
+	--headingFont: 'Inconsolata', monospace;
+	--bodyFont: 'Montserrat', sans-serif;
+	--smallText: 0.7em;
+	--backgroundColor: var(--grey-50);
+	--textColor: var(--grey-1000);
+	--borderRadius: 0.25rem;
+	--letterSpacing: 1px;
+	--transition: 0.3s ease-in-out all;
+	--max-width: 1120px;
+	--fixed-width: 600px;
+	--shadow-1: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+	--shadow-2: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+		0 2px 4px -1px rgba(0, 0, 0, 0.06);
+	--shadow-3: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+		0 4px 6px -2px rgba(0, 0, 0, 0.05);
+	--shadow-4: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+		0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+html {
+	font-size: 0.625;
+}
+
+*,
+*::before,
+*::after {
+	padding: 0;
+	margin: 0;
+	box-sizing: border-box;
+}
+
+body {
+	line-height: 1.5;
+	font-size: 2rem;
+	background-color: var(--clr-background);
+	overflow-x: hidden;
+}
+
+/* Typography */
+ul {
+	list-style-type: none;
+}
+a {
+	text-decoration: none;
+}
+h1,
+h2,
+h3,
+h4 {
+	letter-spacing: var(--spacing);
+	text-transform: capitalize;
+	line-height: 1.25;
+	margin-bottom: 0.25rem;
+}
+h1 {
+	font-size: 2.5rem;
+}
+h2 {
+	font-size: 2.25rem;
+}
+h3 {
+	font-size: 2rem;
+}
+h4 {
+	font-size: 1.75rem;
+}
+p {
+	font-size: 1.5rem;
+	line-height: 2rem;
+	font-weight: 400;
+	letter-spacing: 2px;
+}
+a {
+	font-size: 2rem;
+	margin-bottom: 1rem;
+	color: var(--clr-grey-5);
+}
+
+@media screen and (min-width: 800px) {
+	h1 {
+		font-size: 3rem;
+	}
+	h2 {
+		font-size: 2.75rem;
+	}
+	h3 {
+		font-size: 2.5rem;
+	}
+	h4 {
+		font-size: 2.25rem;
+	}
+
+	p {
+		font-size: 2rem;
+	}
+	body {
+		font-size: 1rem;
+	}
+	h1,
+	h2,
+	h3,
+	h4 {
+		line-height: 1;
+		margin-bottom: 0.75rem;
+	}
+}
+
+@media screen and (min-width: 1500px) {
+	h1 {
+		font-size: 4rem;
+	}
+	h2 {
+		font-size: 3.5rem;
+	}
+	h3 {
+		font-size: 3.25rem;
+	}
+	h4 {
+		font-size: 3rem;
+	}
+
+	p {
+		font-size: 2.5rem;
+	}
+	body {
+		font-size: 1rem;
+	}
+	h1,
+	h2,
+	h3,
+	h4 {
+		line-height: 1;
+		margin-bottom: 1rem;
+	}
+}
+
+/*  global classes */
+
+/* section */
+.section {
+	width: 90vw;
+	margin: 0 auto;
+	max-width: var(--max-width);
+}
+
+@media screen and (min-width: 992px) {
+	.section {
+		width: 95vw;
+	}
+}
+
+/* Utilities */
+.flex-center {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+/* Components */
+.answer {
+	font-size: 1.5rem;
+	font-weight: 300;
+	margin: 0;
+}
+
+.btn-quiz {
+	font-size: 1.5rem;
+	font-weight: bold;
+	width: 100%;
+	border-radius: var(--radius);
+	padding: 0.5rem;
+	margin-top: 1rem;
+	background-color: var(--clr-secondary);
+	color: black;
+}
+
+.btn-quiz:hover {
+	background: #805900;
+	color: #ffb100;
+}
+
+.btn-answer {
+	font-size: 2rem;
+	width: 100%;
+	margin: 0.5rem 0;
+	font-weight: 350;
+	padding: 0.75rem;
+	background-color: var(--clr-primary);
+	color: black;
+}
+
+.btn-answer:hover {
+	background: #49a6e9;
+	color: white;
 }
