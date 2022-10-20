@@ -53,7 +53,7 @@ export const Modal = () => {
 		};
 	}, [dispatch, error]);
 
-	const { _id, name, completed } = task;
+	console.log(task);
 
 	return (
 		<StyledContainer>
@@ -62,7 +62,7 @@ export const Modal = () => {
 				<StyledForm onSubmit={onSubmitHandler}>
 					<StyledRow>
 						<StyledSubHeading>Task ID</StyledSubHeading>
-						<StyledLabel>{_id}</StyledLabel>
+						<StyledLabel>{task._id}</StyledLabel>
 					</StyledRow>
 					<StyledRow>
 						<StyledSubHeading>Name</StyledSubHeading>
@@ -70,14 +70,14 @@ export const Modal = () => {
 							placeholder='eg. Do homework'
 							onChange={onChangeHandler}
 							name='name'
-							value={name}
+							value={task.name}
 						/>
 					</StyledRow>
 					<StyledRow>
 						<StyledSubHeading>Completed</StyledSubHeading>
 						<StyledCheckboxInput
 							onChange={onChangeHandler}
-							defaultChecked={completed}
+							defaultChecked={task.completed}
 							type='checkbox'
 							name='completed'
 						/>
