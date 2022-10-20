@@ -10,7 +10,7 @@ import {
 import { useOnClickOutside } from '../hooks/useClickOutsideHook';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { closeModal, clearError } from '../features/taskSlice';
-import { updateTaskByIdThunk } from '../features/taskThunk';
+import { getTaskByIdThunk, updateTaskByIdThunk } from '../features/taskThunk';
 import { ErrorMessage } from './';
 
 export const Modal = () => {
@@ -35,6 +35,7 @@ export const Modal = () => {
 	const onSubmitHandler: FormEventHandler<HTMLFormElement> = (e) => {
 		e.preventDefault();
 		dispatch(updateTaskByIdThunk(task));
+		dispatch(getTaskByIdThunk(task._id));
 	};
 
 	useEffect(() => {
