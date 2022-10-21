@@ -9,11 +9,13 @@ import {
 	uploadImage,
 } from '../controllers/ProductControllers';
 
+import { checkFileMiddleware } from '../middlewares';
+
 const router = express.Router();
 
 router.route('/').get(getAllProducts).post(CreateProduct);
 
-router.route('/upload').post(uploadImage);
+router.route('/upload').post(checkFileMiddleware, uploadImage);
 
 router
 	.route('/:id')

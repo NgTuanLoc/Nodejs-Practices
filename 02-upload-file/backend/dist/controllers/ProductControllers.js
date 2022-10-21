@@ -14,6 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.uploadImage = exports.updateProductById = exports.deleteProductById = exports.CreateProduct = exports.getProductById = exports.getAllProducts = void 0;
 const http_status_codes_1 = require("http-status-codes");
+// import { UploadedFile } from 'express-fileupload/index';
 const cloudinary_1 = __importDefault(require("cloudinary"));
 const fs_1 = __importDefault(require("fs"));
 const errors_1 = require("../errors");
@@ -70,18 +71,33 @@ const updateProductById = (req, res) => __awaiter(void 0, void 0, void 0, functi
     });
 });
 exports.updateProductById = updateProductById;
+// const uploadImage = async (req: Request, res: Response) => {
+// if (!req.files) throw new BadRequestError('Invalid Image');
+// 	const file = req.files.image as UploadedFile;
+// 	const result = await cloudinary.v2.uploader.upload(file.tempFilePath, {
+// 		use_filename: true,
+// 		folder: 'file-upload',
+// 	});
+// 	fs.unlinkSync(file.tempFilePath);
+// 	res.status(StatusCodes.CREATED).json({
+// 		msg: 'Upload Image Successfully',
+// 		image: { src: result.secure_url },
+// 	});
+// };
 const uploadImage = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    if (!req.files)
-        throw new errors_1.BadRequestError('Invalid Image');
-    const file = req.files.image;
-    const result = yield cloudinary_1.default.v2.uploader.upload(file.tempFilePath, {
-        use_filename: true,
-        folder: 'file-upload',
-    });
-    fs_1.default.unlinkSync(file.tempFilePath);
+    const images = req.body.images;
+    const secureUrlImagesCloudinary = [];
+    for (const image of images) {
+        const result = yield cloudinary_1.default.v2.uploader.upload(image, {
+            use_filename: true,
+            folder: 'file-upload',
+        });
+        secureUrlImagesCloudinary.push(result.secure_url);
+        fs_1.default.unlinkSync(image);
+    }
+    console.log(secureUrlImagesCloudinary);
     res.status(http_status_codes_1.StatusCodes.CREATED).json({
         msg: 'Upload Image Successfully',
-        image: { src: result.secure_url },
     });
 });
 exports.uploadImage = uploadImage;

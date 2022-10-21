@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
-import { UploadedFile } from 'express-fileupload/index';
+// import { UploadedFile } from 'express-fileupload/index';
+
 import cloudinary from 'cloudinary';
 import fs from 'fs';
 
@@ -69,17 +70,37 @@ const updateProductById = async (req: Request, res: Response) => {
 	});
 };
 
+// const uploadImage = async (req: Request, res: Response) => {
+// if (!req.files) throw new BadRequestError('Invalid Image');
+// 	const file = req.files.image as UploadedFile;
+// 	const result = await cloudinary.v2.uploader.upload(file.tempFilePath, {
+// 		use_filename: true,
+// 		folder: 'file-upload',
+// 	});
+// 	fs.unlinkSync(file.tempFilePath);
+// 	res.status(StatusCodes.CREATED).json({
+// 		msg: 'Upload Image Successfully',
+// 		image: { src: result.secure_url },
+// 	});
+// };
+
 const uploadImage = async (req: Request, res: Response) => {
-	if (!req.files) throw new BadRequestError('Invalid Image');
-	const file = req.files.image as UploadedFile;
-	const result = await cloudinary.v2.uploader.upload(file.tempFilePath, {
-		use_filename: true,
-		folder: 'file-upload',
-	});
-	fs.unlinkSync(file.tempFilePath);
+	const images = req.body.images;
+	const secureUrlImagesCloudinary = [];
+
+	for (const image of images) {
+		const result = await cloudinary.v2.uploader.upload(image, {
+			use_filename: true,
+			folder: 'file-upload',
+		});
+		secureUrlImagesCloudinary.push(result.secure_url);
+		fs.unlinkSync(image);
+	}
+
+	console.log(secureUrlImagesCloudinary);
+
 	res.status(StatusCodes.CREATED).json({
 		msg: 'Upload Image Successfully',
-		image: { src: result.secure_url },
 	});
 };
 

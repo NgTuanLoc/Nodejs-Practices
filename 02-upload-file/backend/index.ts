@@ -4,7 +4,8 @@ import colors from 'colors';
 import morgan from 'morgan';
 import 'express-async-errors';
 import cors from 'cors';
-import fileUpload from 'express-fileupload';
+// import fileUpload from 'express-fileupload';
+import multer from 'multer';
 import cloudinary from 'cloudinary';
 
 // Connect to database
@@ -23,6 +24,7 @@ cloudinary.v2.config({
 	api_key: process.env.CLOUD_API_KEY,
 	api_secret: process.env.CLOUD_API_SECRET,
 });
+const upload = multer({ dest: 'uploads/' });
 
 const app: Express = express();
 app.set('trust proxy', 1);
@@ -38,14 +40,14 @@ colors.setTheme({
 app.use(morgan('tiny'));
 app.use(express.json());
 app.use(cors());
-app.use(fileUpload({ useTempFiles: true }));
+// app.use(fileUpload({ useTempFiles: true }));
 
 app.get('/', (req: Request, res: Response) => {
 	res.send('Upload File Server');
 });
 
 // Routers
-app.use('/api/v1/products', ProductRoutes);
+app.use('/api/v1/products', upload.array('image', 5), ProductRoutes);
 app.use(notFoundMiddleware);
 app.use(errorHandlerMiddleware);
 

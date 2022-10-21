@@ -18,7 +18,8 @@ const colors_1 = __importDefault(require("colors"));
 const morgan_1 = __importDefault(require("morgan"));
 require("express-async-errors");
 const cors_1 = __importDefault(require("cors"));
-const express_fileupload_1 = __importDefault(require("express-fileupload"));
+// import fileUpload from 'express-fileupload';
+const multer_1 = __importDefault(require("multer"));
 const cloudinary_1 = __importDefault(require("cloudinary"));
 // Connect to database
 const connect_1 = require("./db/connect");
@@ -33,6 +34,7 @@ cloudinary_1.default.v2.config({
     api_key: process.env.CLOUD_API_KEY,
     api_secret: process.env.CLOUD_API_SECRET,
 });
+const upload = (0, multer_1.default)({ dest: 'uploads/' });
 const app = (0, express_1.default)();
 app.set('trust proxy', 1);
 const PORT = process.env.PORT;
@@ -45,12 +47,12 @@ colors_1.default.setTheme({
 app.use((0, morgan_1.default)('tiny'));
 app.use(express_1.default.json());
 app.use((0, cors_1.default)());
-app.use((0, express_fileupload_1.default)({ useTempFiles: true }));
+// app.use(fileUpload({ useTempFiles: true }));
 app.get('/', (req, res) => {
     res.send('Upload File Server');
 });
 // Routers
-app.use('/api/v1/products', productRoutes_1.default);
+app.use('/api/v1/products', upload.array('image', 5), productRoutes_1.default);
 app.use(middlewares_1.notFoundMiddleware);
 app.use(middlewares_1.errorHandlerMiddleware);
 app.listen(PORT, () => __awaiter(void 0, void 0, void 0, function* () {
