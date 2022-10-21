@@ -47,7 +47,7 @@ app.get('/', (req: Request, res: Response) => {
 });
 
 // Routers
-app.use('/api/v1/products', upload.array('image', 5), ProductRoutes);
+app.use('/api/v1/products', upload.array('images', 5), ProductRoutes);
 app.use(notFoundMiddleware);
 app.use(errorHandlerMiddleware);
 

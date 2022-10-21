@@ -7,7 +7,7 @@ const express_1 = __importDefault(require("express"));
 const ProductControllers_1 = require("../controllers/ProductControllers");
 const middlewares_1 = require("../middlewares");
 const router = express_1.default.Router();
-router.route('/').get(ProductControllers_1.getAllProducts).post(ProductControllers_1.CreateProduct);
+router.route('/').get(ProductControllers_1.getAllProducts).post(middlewares_1.checkFileMiddleware, ProductControllers_1.createProduct);
 router.route('/upload').post(middlewares_1.checkFileMiddleware, ProductControllers_1.uploadImage);
 router
     .route('/:id')

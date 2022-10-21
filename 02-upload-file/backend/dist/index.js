@@ -52,7 +52,7 @@ app.get('/', (req, res) => {
     res.send('Upload File Server');
 });
 // Routers
-app.use('/api/v1/products', upload.array('image', 5), productRoutes_1.default);
+app.use('/api/v1/products', upload.array('images', 5), productRoutes_1.default);
 app.use(middlewares_1.notFoundMiddleware);
 app.use(middlewares_1.errorHandlerMiddleware);
 app.listen(PORT, () => __awaiter(void 0, void 0, void 0, function* () {

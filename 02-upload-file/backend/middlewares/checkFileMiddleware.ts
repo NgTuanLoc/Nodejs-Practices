@@ -9,6 +9,7 @@ export const checkFileMiddleware = (
 	next: NextFunction
 ) => {
 	const files = req.files as Express.Multer.File[];
+
 	const filetypes = /jpg|jpeg|png/;
 	req.body.images = [];
 
@@ -23,5 +24,6 @@ export const checkFileMiddleware = (
 			req.body.images.push(file.path);
 		}
 	}
+
 	next();
 };

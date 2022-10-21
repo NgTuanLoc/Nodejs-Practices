@@ -9,8 +9,8 @@ const productSchema = new mongoose.Schema({
 		type: Number,
 		requited: [true, 'Please provide price'],
 	},
-	image: {
-		type: String,
+	images: {
+		type: [String],
 		required: [true, 'Please provide image file'],
 	},
 });

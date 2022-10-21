@@ -12,11 +12,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.uploadImage = exports.updateProductById = exports.deleteProductById = exports.CreateProduct = exports.getProductById = exports.getAllProducts = void 0;
+exports.uploadImage = exports.updateProductById = exports.deleteProductById = exports.createProduct = exports.getProductById = exports.getAllProducts = void 0;
 const http_status_codes_1 = require("http-status-codes");
+const utils_1 = require("../utils");
 // import { UploadedFile } from 'express-fileupload/index';
-const cloudinary_1 = __importDefault(require("cloudinary"));
-const fs_1 = __importDefault(require("fs"));
 const errors_1 = require("../errors");
 const Product_1 = __importDefault(require("../models/Product"));
 const getAllProducts = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -38,14 +37,17 @@ const getProductById = (req, res) => __awaiter(void 0, void 0, void 0, function*
     });
 });
 exports.getProductById = getProductById;
-const CreateProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const newProductData = yield Product_1.default.create(req.body);
+const createProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { name, price, images } = req.body;
+    const secure_url_images = yield (0, utils_1.storeImagesInCloudinary)(images);
+    const newProduct = { name, price: Number(price), images: secure_url_images };
+    const newProductData = yield Product_1.default.create(newProduct);
     res.status(http_status_codes_1.StatusCodes.CREATED).json({
         msg: 'Create Product Successfully',
         data: newProductData,
     });
 });
-exports.CreateProduct = CreateProduct;
+exports.createProduct = createProduct;
 const deleteProductById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id: productId } = req.params;
     const deletedProduct = yield Product_1.default.findOneAndDelete({ _id: productId });
@@ -86,16 +88,7 @@ exports.updateProductById = updateProductById;
 // };
 const uploadImage = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const images = req.body.images;
-    const secureUrlImagesCloudinary = [];
-    for (const image of images) {
-        const result = yield cloudinary_1.default.v2.uploader.upload(image, {
-            use_filename: true,
-            folder: 'file-upload',
-        });
-        secureUrlImagesCloudinary.push(result.secure_url);
-        fs_1.default.unlinkSync(image);
-    }
-    console.log(secureUrlImagesCloudinary);
+    const secureUrlImagesCloudinary = yield (0, utils_1.storeImagesInCloudinary)(images);
     res.status(http_status_codes_1.StatusCodes.CREATED).json({
         msg: 'Upload Image Successfully',
     });

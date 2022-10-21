@@ -1,9 +1,7 @@
 import { Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
+import { storeImagesInCloudinary } from '../utils';
 // import { UploadedFile } from 'express-fileupload/index';
-
-import cloudinary from 'cloudinary';
-import fs from 'fs';
 
 import { BadRequestError, NotFoundError } from '../errors';
 import Product from '../models/Product';
@@ -29,8 +27,12 @@ const getProductById = async (req: Request, res: Response) => {
 	});
 };
 
-const CreateProduct = async (req: Request, res: Response) => {
-	const newProductData = await Product.create(req.body);
+const createProduct = async (req: Request, res: Response) => {
+	const { name, price, images } = req.body;
+	const secure_url_images = await storeImagesInCloudinary(images);
+	const newProduct = { name, price: Number(price), images: secure_url_images };
+
+	const newProductData = await Product.create(newProduct);
 	res.status(StatusCodes.CREATED).json({
 		msg: 'Create Product Successfully',
 		data: newProductData,
@@ -86,18 +88,8 @@ const updateProductById = async (req: Request, res: Response) => {
 
 const uploadImage = async (req: Request, res: Response) => {
 	const images = req.body.images;
-	const secureUrlImagesCloudinary = [];
 
-	for (const image of images) {
-		const result = await cloudinary.v2.uploader.upload(image, {
-			use_filename: true,
-			folder: 'file-upload',
-		});
-		secureUrlImagesCloudinary.push(result.secure_url);
-		fs.unlinkSync(image);
-	}
-
-	console.log(secureUrlImagesCloudinary);
+	const secureUrlImagesCloudinary = await storeImagesInCloudinary(images);
 
 	res.status(StatusCodes.CREATED).json({
 		msg: 'Upload Image Successfully',
@@ -107,7 +99,7 @@ const uploadImage = async (req: Request, res: Response) => {
 export {
 	getAllProducts,
 	getProductById,
-	CreateProduct,
+	createProduct,
 	deleteProductById,
 	updateProductById,
 	uploadImage,

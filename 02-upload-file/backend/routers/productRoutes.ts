@@ -3,7 +3,7 @@ import express from 'express';
 import {
 	getAllProducts,
 	getProductById,
-	CreateProduct,
+	createProduct,
 	deleteProductById,
 	updateProductById,
 	uploadImage,
@@ -13,7 +13,7 @@ import { checkFileMiddleware } from '../middlewares';
 
 const router = express.Router();
 
-router.route('/').get(getAllProducts).post(CreateProduct);
+router.route('/').get(getAllProducts).post(checkFileMiddleware, createProduct);
 
 router.route('/upload').post(checkFileMiddleware, uploadImage);
 
