@@ -1,7 +1,14 @@
-interface ITask {
+interface IProduct {
 	_id: string;
 	name: string;
-	completed: boolean;
+	price: number;
+	images: string[];
 }
 
-export { ITask };
+interface IFormData {
+	name: string;
+	price: string;
+	images: File[];
+}
+
+export { IProduct, IFormData };

@@ -1,6 +1,7 @@
-import { Loading } from './Loading';
-import { Modal } from './Modal';
-import { Task } from './Task';
-import { ErrorMessage } from './ErrorMessage';
+import Loading from './Loading';
+import Form from './Form';
+import Product from './Product';
+import Image from './Image';
+import Catalog from './Catalog';
 
-export { Loading, Modal, Task, ErrorMessage };
+export { Loading, Form, Product, Image, Catalog };
