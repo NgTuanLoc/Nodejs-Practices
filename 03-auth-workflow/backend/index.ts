@@ -4,6 +4,7 @@ import colors from 'colors';
 import morgan from 'morgan';
 import 'express-async-errors';
 import cors from 'cors';
+import cookieParser from 'cookie-parser';
 
 // Connect to database
 import { connectDB } from './db/connect';
@@ -30,6 +31,7 @@ colors.setTheme({
 // Useful Middleware
 app.use(morgan('tiny'));
 app.use(express.json());
+app.use(cookieParser(process.env.COOKIE_SECRET));
 app.use(cors());
 
 app.get('/', (req: Request, res: Response) => {

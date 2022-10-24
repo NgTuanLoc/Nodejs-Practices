@@ -54,8 +54,6 @@ export const Modal = () => {
 		};
 	}, [dispatch, error]);
 
-	console.log(task);
-
 	return (
 		<StyledContainer>
 			<StyledModal ref={modalRef}>

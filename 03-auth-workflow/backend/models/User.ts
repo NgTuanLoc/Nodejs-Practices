@@ -1,6 +1,19 @@
-import mongoose from 'mongoose';
+import mongoose, { Document } from 'mongoose';
 import validator from 'validator';
 import bcrypt from 'bcryptjs';
+
+export interface IUser extends Document {
+	name: string;
+	email: string;
+	password: string;
+	role: 'admin' | 'user';
+	verificationToken: string;
+	isVerified: boolean;
+	verifiedDate: Date;
+	resetPasswordToken: string;
+	resetPasswordTokenExpirationDate: Date;
+	comparePassword: (inputPassword: string) => Promise<boolean>;
+}
 
 const UserSchema = new mongoose.Schema({
 	name: {
@@ -53,4 +66,4 @@ UserSchema.methods.comparePassword = async function (inputPassword: string) {
 	return isMatch;
 };
 
-export default mongoose.model('User', UserSchema);
+export default mongoose.model<IUser>('User', UserSchema);

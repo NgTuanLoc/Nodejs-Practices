@@ -59,4 +59,19 @@ const updateUserById = async (req: Request, res: Response) => {
 	});
 };
 
-export { getAllUsers, getUserById, CreateUser, deleteUserById, updateUserById };
+const showCurrentUser = async (req: Request, res: Response) => {
+	const { user } = req.body;
+	res.status(StatusCodes.OK).json({
+		msg: 'Show Current User Successfully',
+		user,
+	});
+};
+
+export {
+	getAllUsers,
+	getUserById,
+	CreateUser,
+	deleteUserById,
+	updateUserById,
+	showCurrentUser,
+};
