@@ -5,7 +5,7 @@ import { NotFoundError } from '../errors';
 import User from '../models/User';
 
 const getAllUsers = async (req: Request, res: Response) => {
-	const data = await User.find({});
+	const data = await User.find({}).select('-password');
 	res.status(StatusCodes.OK).json({
 		msg: 'Get All Users Successfully',
 		data,
