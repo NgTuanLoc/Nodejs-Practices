@@ -28,11 +28,6 @@ const authenticateMiddleware = async (
 			throw new UnAuthenticatedError('Authentication Invalid');
 		}
 
-		attachCookiesToResponse({
-			res,
-			user: payload.user,
-			refreshToken: existingToken.refreshToken as string,
-		});
 		req.body.user = payload.user;
 
 		next();

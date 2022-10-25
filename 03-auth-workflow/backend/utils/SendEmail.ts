@@ -14,7 +14,7 @@ export const sendEmail = async ({ to, subject, html }: SendMailOptions) => {
 	const transporter = nodemailer.createTransport(config);
 
 	// send mail with defined transport object
-	return transporter.sendMail({
+	return await transporter.sendMail({
 		from: '"NgTuanLoc" <tuanloc2352000@gmail.com>', // sender address
 		to,
 		subject,

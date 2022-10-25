@@ -5,8 +5,13 @@ import crypto from 'crypto';
 import User from '../models/User';
 import Token from '../models/Token';
 import { BadRequestError, UnAuthenticatedError } from '../errors';
-import { attachCookiesToResponse, sendVerificationEmail } from '../utils';
-import { createUserToken } from '../utils/createUserToken';
+import {
+	attachCookiesToResponse,
+	sendVerificationEmail,
+	createUserToken,
+	generateHashString,
+	sendResetPasswordEmail,
+} from '../utils';
 
 const login = async (req: Request, res: Response) => {
 	const { email, password } = req.body;
@@ -35,6 +40,12 @@ const login = async (req: Request, res: Response) => {
 	// existingRefreshToken
 	let refreshToken = '';
 	const existingRefreshToken = await Token.findOne({ user: user.id });
+	const userData = {
+		name: user.name,
+		email: user.email,
+		userId: user.id,
+		role: user.role,
+	};
 
 	if (existingRefreshToken) {
 		if (!existingRefreshToken.isValid)
@@ -43,6 +54,7 @@ const login = async (req: Request, res: Response) => {
 		attachCookiesToResponse({ res, user: userTokenPayload, refreshToken });
 		return res.status(StatusCodes.OK).send({
 			msg: 'login successful',
+			user: userData,
 		});
 	}
 
@@ -57,6 +69,7 @@ const login = async (req: Request, res: Response) => {
 
 	return res.status(StatusCodes.OK).send({
 		msg: 'login successful',
+		user: userData,
 	});
 };
 
@@ -97,19 +110,78 @@ const register = async (req: Request, res: Response) => {
 };
 
 const logout = async (req: Request, res: Response) => {
-	return res.status(StatusCodes.OK).send({
-		msg: 'logout successful',
+	await Token.findOneAndDelete({ user: req.body.user.id });
+
+	res.cookie('refreshCookie', 'logout', {
+		httpOnly: true,
+		expires: new Date(Date.now() + 1000),
 	});
+
+	res.cookie('accessCookie', 'logout', {
+		httpOnly: true,
+		expires: new Date(Date.now() + 1000),
+	});
+	res.status(StatusCodes.OK).json({ msg: 'user logged out!' });
 };
 
 const forgotPassword = async (req: Request, res: Response) => {
+	const { email } = req.body;
+	const user = await User.findOne({ email });
+
+	if (!user) throw new BadRequestError(`Not found user with email: ${email}`);
+
+	const TERMINATE_IN_TEN_MINUTE = 1000 * 60 * 10;
+	const passwordTokenExpirationDate = new Date(
+		Date.now() + TERMINATE_IN_TEN_MINUTE
+	);
+	const passwordToken = crypto.randomBytes(80).toString('hex');
+
+	// Send reset password email
+	await sendResetPasswordEmail({
+		name: user.name,
+		email: user.email,
+		token: passwordToken,
+		origin: process.env.ORIGIN_DOMAIN as string,
+	});
+
+	// Update user instance data
+	user.resetPasswordToken = generateHashString(passwordToken);
+	user.resetPasswordTokenExpirationDate = passwordTokenExpirationDate;
+	await user.save();
+
 	return res.status(StatusCodes.OK).send({
-		msg: 'Forgot Password Request',
+		msg: 'Please check your email for reset password link',
 	});
 };
 const resetPassword = async (req: Request, res: Response) => {
+	const { token, email, password } = req.body;
+
+	// Check empty
+	if (!token || !email || !password)
+		throw new BadRequestError('Please provide email, password');
+
+	const user = await User.findOne({ email });
+	const currentDate = new Date();
+	const expiredResetPassword = user?.resetPasswordTokenExpirationDate as Date;
+
+	// Check user existed
+	if (!user) throw new BadRequestError(`Not found user with email: ${email}`);
+
+	// Check token
+	if (user.resetPasswordToken !== generateHashString(token))
+		throw new BadRequestError('Token not match');
+
+	// Check expired reset password date
+	if (currentDate > expiredResetPassword)
+		throw new BadRequestError('Reset password expired, please try again later');
+
+	user.password = password;
+	user.resetPasswordToken = '';
+	user.resetPasswordTokenExpirationDate = null;
+	await user.save();
+
 	return res.status(StatusCodes.OK).send({
-		msg: 'Reset Password Request',
+		msg: 'Reset Password successful',
 	});
 };
 const verifyEmail = async (req: Request, res: Response) => {

@@ -61,9 +61,14 @@ const updateUserById = async (req: Request, res: Response) => {
 
 const showCurrentUser = async (req: Request, res: Response) => {
 	const { user } = req.body;
+	const userData = {
+		userId: user.id,
+		role: user.role,
+		name: user.email,
+	};
 	res.status(StatusCodes.OK).json({
 		msg: 'Show Current User Successfully',
-		user,
+		user: userData,
 	});
 };
 

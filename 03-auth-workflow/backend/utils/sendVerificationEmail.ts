@@ -18,5 +18,9 @@ export const sendVerificationEmail = async ({
   <h1>Hello ${name} </h1>
   <p>Please confirm your email by clicking on the following link : <a href='${verifyEmailUrl}'>Verify Email</a></p>`;
 
-	return sendEmail({ to: email, subject: 'Email Verification', html: message });
+	return await sendEmail({
+		to: email,
+		subject: 'Email Verification',
+		html: message,
+	});
 };
