@@ -24,7 +24,19 @@ const connect_1 = require("./db/connect");
 const taskRoutes_1 = __importDefault(require("./routers/taskRoutes"));
 // Error Handler Middlewares
 const middlewares_1 = require("./middlewares");
+// Config
 dotenv_1.default.config();
+let whitelist = ['http://localhost:3000', 'http://example2.com']; // Only these domain can access API
+let corsOptionsDelegate = function (req, callback) {
+    var corsOptions;
+    if (whitelist.indexOf(req.headers.origin) !== -1) {
+        corsOptions = { origin: true }; // reflect (enable) the requested origin in the CORS response
+    }
+    else {
+        corsOptions = { origin: false }; // disable CORS for this request
+    }
+    callback(null, corsOptions); // callback expects two parameters: error and options
+};
 const app = (0, express_1.default)();
 app.set('trust proxy', 1);
 const PORT = process.env.PORT;
@@ -36,9 +48,9 @@ colors_1.default.setTheme({
 // Useful Middleware
 app.use((0, morgan_1.default)('tiny'));
 app.use(express_1.default.json());
-app.use((0, cors_1.default)());
+app.use((0, cors_1.default)(corsOptionsDelegate));
 app.get('/', (req, res) => {
-    res.send('Express + TypeScript Server');
+    res.send('Task Manager API');
 });
 // Routers
 app.use('/api/v1/tasks', taskRoutes_1.default);

@@ -14,7 +14,18 @@ import TaskRouters from './routers/taskRoutes';
 // Error Handler Middlewares
 import { notFoundMiddleware, errorHandlerMiddleware } from './middlewares';
 
+// Config
 dotenv.config();
+let whitelist = ['http://localhost:3000', 'http://example2.com']; // Only these domain can access API
+let corsOptionsDelegate = function (req: Request, callback: any) {
+	var corsOptions;
+	if (whitelist.indexOf(req.headers.origin as string) !== -1) {
+		corsOptions = { origin: true }; // reflect (enable) the requested origin in the CORS response
+	} else {
+		corsOptions = { origin: false }; // disable CORS for this request
+	}
+	callback(null, corsOptions); // callback expects two parameters: error and options
+};
 
 const app: Express = express();
 app.set('trust proxy', 1);
@@ -29,10 +40,10 @@ colors.setTheme({
 // Useful Middleware
 app.use(morgan('tiny'));
 app.use(express.json());
-app.use(cors());
+app.use(cors(corsOptionsDelegate));
 
 app.get('/', (req: Request, res: Response) => {
-	res.send('Express + TypeScript Server');
+	res.send('Task Manager API');
 });
 
 // Routers

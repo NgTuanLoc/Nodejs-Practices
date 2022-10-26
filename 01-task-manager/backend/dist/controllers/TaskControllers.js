@@ -18,6 +18,7 @@ const errors_1 = require("../errors");
 const Task_1 = __importDefault(require("../models/Task"));
 const getAllTasks = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const data = yield Task_1.default.find({});
+    console.log(req.headers.origin);
     res.status(http_status_codes_1.StatusCodes.OK).json({
         msg: 'Get All Tasks Successfully',
         data,

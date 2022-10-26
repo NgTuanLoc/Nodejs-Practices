@@ -6,6 +6,8 @@ import Task from '../models/Task';
 
 const getAllTasks = async (req: Request, res: Response) => {
 	const data = await Task.find({});
+	console.log(req.headers.origin);
+
 	res.status(StatusCodes.OK).json({
 		msg: 'Get All Tasks Successfully',
 		data,
